@@ -1,7 +1,7 @@
 services:
   api:
     build: .
-    image: ${DOCKERHUB_USER:-local}/smart-grid-api:${TAG:-latest}
+    image: ${DOCKERHUB_USER:-local}/smart-grid:${TAG:-latest}
     command: python scripts/run_api.py
     ports:
       - "8000:8000"
@@ -18,7 +18,7 @@ services:
 
   ui:
     build: .
-    image: ${DOCKERHUB_USER:-local}/smart-grid-ui:${TAG:-latest}
+    image: ${DOCKERHUB_USER:-local}/smart-grid:${TAG:-latest}
     command: python scripts/run_ui.py
     ports:
       - "8501:8501"

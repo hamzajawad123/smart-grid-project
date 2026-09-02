@@ -68,10 +68,11 @@ API http://127.0.0.1:8000  ·  UI http://127.0.0.1:8501
 
 Push (after `docker login`):
 
+One Hub image (`smart-grid`). Compose starts API and UI from it with different commands.
+
 ```bash
 docker compose build
-docker push %DOCKERHUB_USER%/smart-grid-api:latest
-docker push %DOCKERHUB_USER%/smart-grid-ui:latest
+docker push %DOCKERHUB_USER%/smart-grid:latest
 ```
 
 Feast / Postgres / Redis are not in v1 serving (CSV/Parquet + `models/production/`).

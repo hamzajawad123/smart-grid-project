@@ -27,6 +27,5 @@ jobs:
         env:
           DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          docker build -t "$DOCKERHUB_USER/smart-grid-api:latest" -t "$DOCKERHUB_USER/smart-grid-ui:latest" .
-          docker push "$DOCKERHUB_USER/smart-grid-api:latest"
-          docker push "$DOCKERHUB_USER/smart-grid-ui:latest"
+          docker build -t "$DOCKERHUB_USER/smart-grid:latest" .
+          docker push "$DOCKERHUB_USER/smart-grid:latest"
