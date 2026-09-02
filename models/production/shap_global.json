@@ -1,0 +1,32 @@
+{
+  "n_rows": 400,
+  "mean_abs": {
+    "lag_24": 484.9249,
+    "temperature_2m": 232.253,
+    "dow_sin": 69.2364,
+    "hour_sin": 68.9831,
+    "relative_humidity_2m": 51.6898,
+    "cdd": 50.3932,
+    "lag_168": 41.8717,
+    "hdd": 40.9941,
+    "hour_cos": 37.2645,
+    "dow_cos": 34.4434,
+    "temp_change_24": 21.5555,
+    "shortwave_radiation": 17.3292,
+    "roll_mean_24": 10.651,
+    "wind_speed_10m": 10.5985,
+    "lag_72": 9.9192,
+    "month_cos": 9.5915,
+    "month_sin": 8.8683,
+    "roll_mean_168": 8.4499,
+    "roll_max_24": 6.6454,
+    "is_holiday": 6.2941,
+    "roll_std_24": 5.3265,
+    "roll_min_24": 5.2502,
+    "precipitation": 4.8262,
+    "cloud_cover": 3.2063,
+    "lag_48": 2.8249,
+    "was_imputed": 2.1224,
+    "is_weekend": 0.0
+  }
+}

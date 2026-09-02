@@ -1,0 +1,87 @@
+# Single source of truth for v1 ingest + EDA.
+# Secrets stay in .env / Colab, not here.
+
+grid_id: PJM_PE
+
+eia:
+  base_url: https://api.eia.gov/v2
+  route: electricity/rto/region-sub-ba-data
+  parent: PJM
+  subba: PE
+  frequency: hourly
+  page_size: 5000
+
+weather:
+  historical_forecast_url: https://historical-forecast-api.open-meteo.com/v1/forecast
+  forecast_url: https://api.open-meteo.com/v1/forecast
+  latitude: 39.95
+  longitude: -75.17
+  timezone: America/New_York
+  hourly:
+    - temperature_2m
+    - relative_humidity_2m
+    - wind_speed_10m
+    - apparent_temperature
+    - precipitation
+    - cloud_cover
+    - shortwave_radiation
+  cache_hours: 12
+
+# Historical Forecast weather starts ~2022; use the overlap window.
+start_date: "2022-01-01"
+
+# Chronological only. Test ≈ last 12 months of the snapshot; val = 12 months before that.
+split:
+  val_start: "2024-08-31"
+  test_start: "2025-08-31"
+
+horizon_hours: 24
+
+# Promote a daily refit only if test WAPE improves. Peak-MAE breaks near-ties.
+promotion:
+  primary_metric: wape
+  wape_tie: 0.002
+
+model:
+  name: peco-demand-ensemble
+  alias: production
+  # Locked from Colab walk-forward RandomizedSearch (do not re-search at freeze).
+  lightgbm:
+    subsample: 1.0
+    num_leaves: 127
+    n_estimators: 400
+    min_child_samples: 80
+    learning_rate: 0.05
+  xgboost:
+    subsample: 0.7
+    n_estimators: 600
+    min_child_weight: 5
+    max_depth: 4
+    learning_rate: 0.03
+  ensemble_weight_lgbm: 0.5
+
+mlflow:
+  experiment: peco-demand
+  registered_model: peco-demand-ensemble
+
+# PECO Rate R Time-Of-Use Pricing Option — generation supply only (GSA 1).
+# Periods: PECO Electric Pa. P.U.C. No. 8 and peco.com/TOU (America/New_York).
+# Peak: 2–6pm Mon–Fri excluding PJM holidays. Super off-peak: 12–6am every day.
+# Off-peak: all other hours. Distribution and other riders are not included.
+# Dollars/kWh for June 1–Nov 30, 2026 use PECO’s tariff formula with:
+#   Standard GSA Rate R $0.10785 (PECO GSA filing, June 1–Nov 30, 2026)
+#   GSA-1 multipliers 6.06 / 1.44 / 1.00 and allocators 12.73% / 67.51% / 19.76%
+#   from Tariff No. 8 (same method that reproduces the April 1, 2026 printed table).
+tariff:
+  currency: USD
+  unit: kWh
+  timezone: America/New_York
+  rate_class: R
+  component: generation_supply
+  effective: "2026-06-01"
+  through: "2026-11-30"
+  super_off_peak_usd: 0.05556
+  off_peak_usd: 0.08001
+  peak_usd: 0.33669
+  peak_hours_et: [14, 15, 16, 17]
+  super_off_peak_hours_et: [0, 1, 2, 3, 4, 5]

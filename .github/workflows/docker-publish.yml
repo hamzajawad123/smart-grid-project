@@ -1,0 +1,32 @@
+name: Publish Docker images
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths:
+      - Dockerfile
+      - docker-compose.yml
+      - requirements.txt
+      - src/**
+      - frontend/**
+      - scripts/**
+      - params.yaml
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push API + UI
+        env:
+          DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+          docker build -t "$DOCKERHUB_USER/smart-grid-api:latest" -t "$DOCKERHUB_USER/smart-grid-ui:latest" .
+          docker push "$DOCKERHUB_USER/smart-grid-api:latest"
+          docker push "$DOCKERHUB_USER/smart-grid-ui:latest"
