@@ -40,6 +40,24 @@ python scripts/run_ui.py
 
 `POST /forecast` with `{ "grid_id": "PJM_PE", "horizon_hours": 24 }`.
 
+## Streamlit Community Cloud (public UI)
+
+Cloud cannot run FastAPI. The UI calls the same serving code in-process. FastAPI is unchanged for local/Docker.
+
+1. Commit and push these files to `main`.
+2. Open [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
+3. **New app** → `hamzajawad123/smart-grid-project` → branch `main`.
+4. Main file path: `frontend/Overview.py`.
+5. Advanced settings → Secrets (TOML). Put your EIA key only:
+
+```toml
+EIA_API_KEY = "your-key"
+```
+
+Do **not** set `SMART_GRID_API_URL` (that would try a remote API).
+6. Deploy. First boot can take several minutes (install + 14-day EIA ingest).
+7. Share the `*.streamlit.app` URL. The app sleeps when idle; the first visitor after sleep waits for a restart.
+
 ## Refresh data (keeps the live origin current)
 
 ```bash
