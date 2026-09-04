@@ -65,6 +65,13 @@ def train_ensemble(frame: pd.DataFrame | None = None) -> dict:
     train = df[df["split"] == "train"]
     val = df[df["split"] == "val"]
     test = df[df["split"] == "test"]
+    if train.empty:
+        counts = df["split"].value_counts().to_dict() if "split" in df.columns else {}
+        raise ValueError(
+            f"Train split is empty ({len(df)} feature rows, splits={counts}). "
+            "GitHub Actions has no committed CSVs, so a 14-day ingest lands only in test. "
+            "Run: python scripts/refresh_data.py --full"
+        )
     x_train, y_train = train[FEATURE_COLS], train[TARGET]
     p90 = float(y_train.quantile(0.90))
     p75 = float(y_train.quantile(0.75))

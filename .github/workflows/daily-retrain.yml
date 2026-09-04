@@ -16,10 +16,12 @@ jobs:
           python-version: "3.11"
       - name: Install
         run: pip install -r requirements.txt
-      - name: Refresh data
+      # Empty checkout has no CSVs. Incremental ingest is ~14 recent days, all in
+      # the test split (after 2025-08-31), so LightGBM would see 0 train rows.
+      - name: Refresh full history
         env:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
-        run: python scripts/refresh_data.py
+        run: python scripts/refresh_data.py --full
       - name: Train and promote only if better
         env:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
